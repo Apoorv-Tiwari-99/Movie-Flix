@@ -11,6 +11,8 @@ const tablesDB = new TablesDB(client);
 
 export const updateSearchCount = async (query: string, movie: Movie) => {
     try {
+
+        console.log("Movie received is:",movie);
         // 🔎 Check if searchTerm exists
         const result = await tablesDB.listRows({
             databaseId: DATABASE_ID,
@@ -23,6 +25,7 @@ export const updateSearchCount = async (query: string, movie: Movie) => {
         if (result.rows.length > 0) {
             
             const existingRow = result.rows[0];
+            console.log("Existing row is :",existingRow);
             await tablesDB.updateRow({
                 databaseId: DATABASE_ID,
                 tableId: TABLE_ID,
@@ -53,3 +56,24 @@ export const updateSearchCount = async (query: string, movie: Movie) => {
         throw err;
     }
 };
+
+export const getTrendingMovies=async():Promise<TrendingMovie[]|undefined>=>{
+     try {
+        const result = await tablesDB.listRows({
+            databaseId: DATABASE_ID,
+            tableId: TABLE_ID,
+            queries: [Query.limit(5),
+            Query.orderDesc('count'),  
+        ],
+        });
+
+        return result.rows as unknown as TrendingMovie[];
+
+
+     } catch (error) {
+        console.log(error);
+        return undefined;
+     }
+}
+
+
