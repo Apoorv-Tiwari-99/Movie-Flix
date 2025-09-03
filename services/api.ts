@@ -66,4 +66,23 @@ export const OMDB_CONFIG = {
       );
     }
   };
+
+  export const fetchMovieDetails=async(movieId:string):Promise<MovieDetails>=>{
+       try {
+        
+        const response=await fetch(`${OMDB_CONFIG.BASE_URL}?i=${movieId}&apikey=${OMDB_CONFIG.API_KEY}`);
+
+        if(!response.ok){
+            throw new Error("Failed to fetch movie details");
+        }
+
+        const data=await response.json();
+
+        return data;
+
+       } catch (error) {
+         console.log(error);
+         throw error;
+       }
+  }
   
